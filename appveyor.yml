@@ -231,7 +231,7 @@
         "/p:Configuration=Debug",
         "/p:Platform=x64")
   
-        Exec-External {& "$env:SYSTEMDRIVE\Tools\Coverity\bin\cov-configure.exe" --config cov-dokan.xml --msvc --xml-option=skip_file:".*/spdlog/.*" }
+        Exec-External {& "$env:SYSTEMDRIVE\Tools\Coverity\bin\cov-configure.exe" --config cov-dokan.xml --msvc --xml-option=skip_file:"(.*/spdlog/.*|.*/Microsoft/.*)" }
         Exec-External {& "$env:SYSTEMDRIVE\Tools\Coverity\bin\cov-build.exe" `
         --config cov-dokan.xml --dir cov-int `
         $buildCmd $buildArgs}
