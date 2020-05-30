@@ -22,9 +22,6 @@
   configuration:
   - All
   - Coverity
-  - SonarQube
-  - FsTest
-  - Documentation
 
   image:
     - Visual Studio 2019
@@ -218,7 +215,7 @@
         .\scripts\sonar-build.ps1 dokany $env:SonarQubeToken dokan-dev https://sonarcloud.io $env:APPVEYOR_BUILD_VERSION
       }
   - ps: |
-      if ($env:CONFIGURATION -eq "Coverity" -and "$env:APPVEYOR_REPO_BRANCH" -eq "master") {
+      if ($env:CONFIGURATION -eq "Coverity") {
 
         if (!"$env:CoverityProjectToken") {
           Add-AppveyorMessage -Message "Not running Coverity due to missing credential. Is this a fork or a pull request?" -Category Information
@@ -235,8 +232,9 @@
         "/p:Configuration=Debug",
         "/p:Platform=x64")
   
+        Exec-External {& "$env:SYSTEMDRIVE\Tools\Coverity\bin\cov-configure.exe" --config cov-dokan.xml --msvc --xml-option=skip_file:".*/dokan_memfs/spdlog/.*" }
         Exec-External {& "$env:SYSTEMDRIVE\Tools\Coverity\bin\cov-build.exe" `
-        --dir cov-int `
+        --config cov-dokan.xml --dir cov-int `
         $buildCmd $buildArgs}
 
         Exec-External {nuget install -ExcludeVersion PublishCoverity}
